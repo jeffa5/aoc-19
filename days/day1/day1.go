@@ -6,13 +6,13 @@ import (
 	"github.com/jeffa5/aoc-19/utils"
 )
 
-func Day1(part int) string {
-	ints := utils.ReadFileLinesInt("input/day1")
+func Day1(p int, base string) string {
+	ints := utils.ReadFileLinesInt(base + "1")
 
 	sum := 0
 
 	for _, i := range ints {
-		switch part {
+		switch p {
 		case 1:
 			sum += calcWeight(i)
 		case 2:

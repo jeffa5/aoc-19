@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test1a(t *testing.T) {
+func TestA(t *testing.T) {
 	a := assert.New(t)
 
 	tests := []struct {
@@ -31,9 +31,11 @@ func Test1a(t *testing.T) {
 		w := calcWeight(tt.m)
 		a.Equal(tt.e, w)
 	}
+
+	a.Equal("3415076", Day1(1, "../../input/day"))
 }
 
-func Test1b(t *testing.T) {
+func TestB(t *testing.T) {
 	a := assert.New(t)
 
 	tests := []struct {
@@ -55,4 +57,6 @@ func Test1b(t *testing.T) {
 		w := calcWeightWithFuel(tt.m)
 		a.Equal(tt.e, w)
 	}
+
+	a.Equal("5119745", Day1(2, "../../input/day"))
 }
