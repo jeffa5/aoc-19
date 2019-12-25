@@ -33,23 +33,21 @@ func Day3(p int, base string) string {
 	return fmt.Sprintf("%d", d)
 }
 
+type Pos struct {
+	x, y int
+}
+
 type Point struct {
-	x, y, steps int
+	pos   Pos
+	steps int
 }
 
 type Intersect struct {
-	x, y, s1, s2 int
+	pos    Pos
+	s1, s2 int
 }
 
 func findClosestIntersection(points1, points2 []Point, byDist bool) int {
-	both := []Intersect{}
-	for _, p1 := range points1 {
-		for _, p2 := range points2 {
-			if p1.x == p2.x && p1.y == p2.y {
-				both = append(both, Intersect{p1.x, p1.y, p1.steps, p2.steps})
-			}
-		}
-	}
 
 	abs := func(a int) int {
 		if a < 0 {
@@ -58,13 +56,28 @@ func findClosestIntersection(points1, points2 []Point, byDist bool) int {
 		return a
 	}
 
+	both := []Intersect{}
+
+	m := make(map[Pos]Point)
+
+	for _, p := range points1 {
+		m[p.pos] = p
+	}
+
+	for _, p2 := range points2 {
+		if p1, ok := m[p2.pos]; ok {
+			x := abs(p1.pos.x)
+			y := abs(p1.pos.y)
+			both = append(both, Intersect{Pos{x, y}, p1.steps, p2.steps})
+		}
+	}
+
 	dist := math.MaxUint32
 	for _, i := range both {
 		if byDist {
-			x := abs(i.x)
-			y := abs(i.y)
-			if x+y < dist {
-				dist = x + y
+			newDist := i.pos.x + i.pos.y
+			if newDist < dist {
+				dist = newDist
 			}
 		} else {
 			if i.s1+i.s2 < dist {
@@ -78,23 +91,23 @@ func findClosestIntersection(points1, points2 []Point, byDist bool) int {
 
 func genPoints(parts []string) []Point {
 	points := []Point{}
-	point := Point{0, 0, 0}
+	point := Point{Pos{0, 0}, 0}
 
 	for _, part := range parts {
 		dir := part[0]
 		s, _ := strconv.Atoi(part[1:])
 
 		for i := 0; i < s; i++ {
-			point = Point{point.x, point.y, point.steps + 1}
+			point = Point{Pos{point.pos.x, point.pos.y}, point.steps + 1}
 			switch dir {
 			case 'R':
-				point.x += 1
+				point.pos.x += 1
 			case 'U':
-				point.y += 1
+				point.pos.y += 1
 			case 'D':
-				point.y -= 1
+				point.pos.y -= 1
 			case 'L':
-				point.x -= 1
+				point.pos.x -= 1
 			}
 			points = append(points, point)
 		}
